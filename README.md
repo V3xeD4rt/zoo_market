@@ -124,7 +124,46 @@
 
 ## UML-диаграмма
 
-*Раздел в разработке.* Диаграмма будет описывать основные сценарии взаимодействия **Покупателя** с системой (каталог, заказ, оплата, получение, донаты, запись в ветклинику и на услуги).
+```mermaid
+flowchart LR
+    %% Акторы
+    buyer["👤 Покупатель"]
+    vetmis["🏥 МИС Ветклиники"]
+
+    %% Граница системы
+    subgraph system["Интернет-магазин «Зоология»"]
+        direction TB
+        browse["Просмотр каталога"]
+        cart["Корзина и оформление заказа"]
+        pay["Онлайн-оплата"]
+        pickup["Самовывоз"]
+        delivery["Доставка курьером"]
+        donate["Донат в приют"]
+        buyAnimal["Покупка животного"]
+        bookVet["Запись в ветклинику"]
+        bookService["Запись на услуги"]
+    end
+
+    %% Связи Покупателя
+    buyer --> browse
+    buyer --> cart
+    buyer --> donate
+    buyer --> buyAnimal
+    buyer --> bookVet
+    buyer --> bookService
+
+    %% Связи внутри системы
+    cart --> pay
+    cart --> pickup
+    cart --> delivery
+    bookVet --> vetmis
+
+    %% Стили
+    classDef actor fill:#f9f,stroke:#333,stroke-width:2px
+    classDef usecase fill:#e1f5fe,stroke:#0288d1,stroke-width:1px
+    class buyer,vetmis actor
+    class browse,cart,pay,pickup,delivery,donate,buyAnimal,bookVet,bookService usecase
+```
 
 ---
 
@@ -132,4 +171,3 @@
 
 > Дата начала проекта: **10 октября 2026**  
 > Плановая длительность: **10 октября 2028**
-
