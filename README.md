@@ -126,43 +126,135 @@
 
 ```mermaid
 flowchart LR
-    %% Акторы
+    %% ===== Акторы =====
     buyer["👤 Покупатель"]
-    vetmis["🏥 МИС Ветклиники"]
+    admin["🛠 Администратор"]
+    breeder["🐕 Заводчик"]
+    shelter["🏠 Сотрудник приюта"]
+    courier["🚚 Курьер"]
 
-    %% Граница системы
+    %% ===== Внешние системы =====
+    paygw["💳 Платёжный шлюз / Банк"]
+    vetmis["🏥 МИС Ветклиники"]
+    deliverysvc["📦 Курьерская служба"]
+    fund["❤️ Фонд / Приют"]
+    ones["🗄 1С"]
+    notify["🔔 SMS / Push-сервис"]
+    loyalty["🎁 Система лояльности"]
+    recommender["🤖 Рекомендательная система"]
+
+    %% ===== Граница системы =====
     subgraph system["Интернет-магазин «Зоология»"]
         direction TB
-        browse["Просмотр каталога"]
-        cart["Корзина и оформление заказа"]
-        pay["Онлайн-оплата"]
-        pickup["Самовывоз"]
-        delivery["Доставка курьером"]
-        donate["Донат в приют"]
-        buyAnimal["Покупка животного"]
-        bookVet["Запись в ветклинику"]
-        bookService["Запись на услуги"]
+
+        subgraph catalog["Каталог и товары"]
+            browse["Просмотр каталога"]
+            search["Поиск и фильтрация"]
+            favorites["Избранное / лайки"]
+        end
+
+        subgraph order["Заказ и оплата"]
+            cart["Корзина"]
+            checkout["Оформление заказа"]
+            pay["Онлайн-оплата"]
+            pickup["Самовывоз"]
+            delivery["Доставка курьером"]
+            track["Отслеживание заказа"]
+        end
+
+        subgraph client["Клиент"]
+            auth["Идентификация по телефону"]
+            bonus["Бонусы и накопительные скидки"]
+            recs["Персональные рекомендации"]
+        end
+
+        subgraph charity["Донаты"]
+            chooseShelter["Выбор приюта"]
+            monthlyDonate["Ежемесячный донат"]
+        end
+
+        subgraph animals["Продажа животных"]
+            animalList["Объявления от заводчиков"]
+            animalOrder["Бронирование животного"]
+        end
+
+        subgraph vet["Ветеринария"]
+            vetList["Список партнёрских клиник"]
+            bookVet["Запись на приём"]
+            vetStatus["Статус записи"]
+        end
+
+        subgraph services["Услуги"]
+            serviceList["Каталог услуг"]
+            bookService["Запись на услугу"]
+        end
+
+        subgraph backoffice["Администрирование"]
+            manageCatalog["Управление каталогом"]
+            manageOrders["Обработка заказов"]
+            managePromo["Акции и скидки"]
+        end
     end
 
-    %% Связи Покупателя
+    %% ===== Связи: Покупатель =====
     buyer --> browse
+    buyer --> search
+    buyer --> favorites
     buyer --> cart
-    buyer --> donate
-    buyer --> buyAnimal
+    buyer --> checkout
+    buyer --> chooseShelter
+    buyer --> animalList
+    buyer --> animalOrder
+    buyer --> vetList
     buyer --> bookVet
+    buyer --> serviceList
     buyer --> bookService
+    buyer --> bonus
+    buyer --> track
 
-    %% Связи внутри системы
-    cart --> pay
-    cart --> pickup
-    cart --> delivery
+    %% ===== Связи: Администратор =====
+    admin --> manageCatalog
+    admin --> manageOrders
+    admin --> managePromo
+
+    %% ===== Связи: Заводчик =====
+    breeder --> animalList
+
+    %% ===== Связи: Сотрудник приюта =====
+    shelter --> fund
+
+    %% ===== Связи: Курьер =====
+    courier --> delivery
+    courier --> track
+
+    %% ===== Внутренние связи =====
+    search --> browse
+    favorites --> recs
+    cart --> checkout
+    checkout --> pay
+    checkout --> pickup
+    checkout --> delivery
+    pay --> paygw
+    delivery --> deliverysvc
+    track --> deliverysvc
+    bonus --> loyalty
+    recs --> recommender
+    chooseShelter --> monthlyDonate
+    monthlyDonate --> fund
+    animalOrder --> notify
     bookVet --> vetmis
+    vetmis --> vetStatus
+    manageCatalog --> ones
+    checkout --> notify
+    auth --> checkout
 
-    %% Стили
+    %% ===== Стили =====
     classDef actor fill:#f9f,stroke:#333,stroke-width:2px
+    classDef external fill:#fff3e0,stroke:#e65100,stroke-width:1.5px
     classDef usecase fill:#e1f5fe,stroke:#0288d1,stroke-width:1px
-    class buyer,vetmis actor
-    class browse,cart,pay,pickup,delivery,donate,buyAnimal,bookVet,bookService usecase
+    class buyer,admin,breeder,shelter,courier actor
+    class paygw,vetmis,deliverysvc,fund,ones,notify,loyalty,recommender external
+    class browse,search,favorites,cart,checkout,pay,pickup,delivery,track,auth,bonus,recs,chooseShelter,monthlyDonate,animalList,animalOrder,vetList,bookVet,vetStatus,serviceList,bookService,manageCatalog,manageOrders,managePromo usecase
 ```
 
 ---
