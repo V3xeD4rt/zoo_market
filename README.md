@@ -138,42 +138,51 @@ flowchart LR
     deliverysvc["📦 Курьерская служба"]
     fund["❤️ Фонд / Приют"]
     ones["🗄 1С"]
-    notify["🔔 SMS / Push"]
 
+    %% Граница системы
     subgraph system["Интернет-магазин «Зоология»"]
         direction TB
+
         subgraph S1["Каталог и поиск"]
-            f1["Показывает товары из 1С"]
+            f1["Показывает актуальные товары"]
             f2["Ищет и фильтрует товары"]
         end
+
         subgraph S2["Заказ и оплата"]
-            f3["Формирует корзину"]
+            f3["Собирает корзину"]
             f4["Принимает онлайн-оплату"]
             f5["Оформляет самовывоз или доставку"]
         end
+
         subgraph S3["Донаты"]
-            f6["Позволяет выбрать приют"]
+            f6["Даёт выбрать приют"]
             f7["Списывает ежемесячный донат"]
         end
+
         subgraph S4["Животные"]
             f8["Публикует объявления заводчиков"]
-            f9["Бронирует животное"]
+            f9["Позволяет забронировать животное"]
         end
+
         subgraph S5["Ветеринария и услуги"]
             f10["Записывает в ветклинику"]
             f11["Записывает на услуги"]
         end
+
         subgraph S6["Клиентские механики"]
             f12["Идентифицирует по телефону"]
             f13["Начисляет бонусы и скидки"]
             f14["Формирует рекомендации"]
         end
+
         subgraph S7["Администрирование"]
             f16["Управляет каталогом и заказами"]
             f17["Настраивает акции и рекомендации"]
+            f18["Синхронизирует каталог с 1С"]
         end
     end
 
+    %% Покупатель
     buyer --> f2
     buyer --> f3
     buyer --> f6
@@ -184,38 +193,34 @@ flowchart LR
     buyer --> f13
     buyer --> f14
 
+    %% Администратор
     admin --> f16
     admin --> f17
+    admin --> f18
+
+    %% Заводчик и курьер
     breeder --> f8
     courier --> f5
 
+    %% Внутренние связи
     f1 --> f2
     f3 --> f4
     f3 --> f5
     f6 --> f7
-    f10 --> f11
     f4 --> paygw
     f5 --> deliverysvc
     f7 --> fund
     f10 --> vetmis
-    f1 --> ones
-    f16 --> ones
+    f18 --> ones
     f13 --> f14
 
-    %% Уведомления через внешний сервис
-    f3 --> notify
-    f5 --> notify
-    f7 --> notify
-    f9 --> notify
-    f10 --> notify
-    f11 --> notify
-
+    %% Стили
     classDef actor fill:#f9f,stroke:#333,stroke-width:2px
     classDef external fill:#fff3e0,stroke:#e65100,stroke-width:1.5px
     classDef usecase fill:#e1f5fe,stroke:#0288d1,stroke-width:1px
     class buyer,admin,breeder,courier actor
-    class paygw,vetmis,deliverysvc,fund,ones,notify external
-    class f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f16,f17 usecase
+    class paygw,vetmis,deliverysvc,fund,ones external
+    class f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f16,f17,f18 usecase
 ```
 
 ---
